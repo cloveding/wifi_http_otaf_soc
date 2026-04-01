@@ -53,3 +53,9 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+wifi_secrets.h
+
+.DS_Store
+Thumbs.db
+
