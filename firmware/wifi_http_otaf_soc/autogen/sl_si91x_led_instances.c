@@ -1,9 +1,9 @@
-/***************************************************************************//**
- * @file main.c
- * @brief main() function.
+/***************************************************************************/ /**
+ * @file sl_si91x_led_instances.c.jinja
+ * @brief Button Driver Instances
  *******************************************************************************
  * # License
- * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2023 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -27,19 +27,17 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  ******************************************************************************/
-#include "sl_main_init.h"
-#include "sl_main_kernel.h"
-#include "app.h"
 
-int main(void)
+#include "sl_si91x_led_config.h"
+#include "sl_si91x_led_instances.h"
+#include "sl_si91x_led.h"
+sl_led_t const led_led0 = {
+  .port = SL_LED_LED0_PORT,
+  .pin = SL_LED_LED0_PIN,
+  .led_number = SL_LED_LED0_NUMBER,
+};
+
+void led_init_instances(void)
 {
-  // Initialize Silicon Labs device, system, service(s) and protocol stack(s).
-  sl_main_second_stage_init();
-
-  app_init();
-
-  while (sl_main_start_task_should_continue()) {
-  // while (1) {
-    app_process_action();
-  }
+  sl_si91x_led_init(&led_led0);
 }

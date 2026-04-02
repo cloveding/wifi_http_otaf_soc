@@ -1,9 +1,9 @@
-/***************************************************************************//**
- * @file main.c
- * @brief main() function.
+/***************************************************************************/ /**
+ * @file sl_si91x_led_instances.h.jinja
+ * @brief Button Driver Instances
  *******************************************************************************
  * # License
- * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2023 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -27,19 +27,23 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  ******************************************************************************/
-#include "sl_main_init.h"
-#include "sl_main_kernel.h"
-#include "app.h"
 
-int main(void)
-{
-  // Initialize Silicon Labs device, system, service(s) and protocol stack(s).
-  sl_main_second_stage_init();
+#ifndef SL_SI91x_LED_INSTANCES_H
+#define SL_SI91x_LED_INSTANCES_H
 
-  app_init();
+#include <stdint.h>
+#include "sl_si91x_led_init_led0_config.h"
 
-  while (sl_main_start_task_should_continue()) {
-  // while (1) {
-    app_process_action();
-  }
-}
+
+typedef struct {
+  uint8_t pin;        ///< Pin number of the LED.
+  uint8_t port;       ///< Port number of the LED.
+  uint8_t led_number; ///< LED number for identification.
+} sl_led_t;
+
+extern const sl_led_t led_led0;
+
+
+void led_init_instances(void);
+
+#endif // SL_SI91x_LED_INSTANCES_H

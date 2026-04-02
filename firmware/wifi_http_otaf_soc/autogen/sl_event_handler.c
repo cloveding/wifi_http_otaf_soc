@@ -4,6 +4,7 @@
 #include "sl_si91x_clock_manager.h"
 #include "sli_siwx917_soc.h"
 #include "rsi_debug.h"
+#include "sl_si91x_led_instances.h"
 #include "cmsis_os2.h"
 
 void sli_driver_permanent_allocation(void)
@@ -41,6 +42,7 @@ void sl_kernel_start(void)
 
 void sl_driver_init(void)
 {
+  led_init_instances();
 }
 
 void sl_service_init(void)

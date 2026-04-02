@@ -27,6 +27,10 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  ******************************************************************************/
+
+ // link used for accessing our device update files:
+ // https://otau.blob.core.windows.net/rps/blinky.rps
+
 #include "cmsis_os2.h"
 #include "sl_board_configuration.h"
 #include "sl_net.h"
@@ -39,11 +43,18 @@
 #include "sl_utility.h"
 #include "sl_net_si91x.h"
 #include "sl_net_wifi_types.h"
+#include "pin_config.h"
+#include "RTE_Device_917.h"
+#include "sl_si91x_driver_gpio.h"
 
 // include certificates
 #include "aws_starfield_ca.pem.h"
-#include "azure_baltimore_ca.pem.h"
+// #include "azure_baltimore_ca.pem.h"
+#include "silabs_dgcert_ca.pem.h"
 #include "cacert.pem.h"
+
+#define AZURE_ENABLE      1
+#define SET               0
 
 #ifdef SLI_SI91X_MCU_INTERFACE
 #include "sl_si91x_hal_soc_soft_reset.h"
@@ -102,7 +113,7 @@
 #define HTTP_PORT 443
 //! Server URL
 #if (FW_UPDATE_TYPE == TA_FW_UPDATE)
-#define HTTP_URL "rps/firmware.rps"
+#define HTTP_URL "rps/firmware.rps" // HTTP resource name
 #else
 #define HTTP_URL "isp.bin"
 #endif
@@ -110,18 +121,18 @@
 char *hostname = "otafaws.s3.ap-south-1.amazonaws.com";
 //! set HTTP extended header
 //! if NULL , driver fills default extended header
-#define HTTP_EXTENDED_HEADER NULL
+#define HTTP_EXTENDED_HEADER NULL // HTTP extended header
 //! set Username
-#define USERNAME ""
+#define USERNAME "" // the username to be used to access the HTTP resource
 //! set Password
-#define PASSWORD    ""
+#define PASSWORD    "" // PASSWORD
 #define SERVER_NAME "AWS Server"
 
 #elif AZURE_ENABLE
 //! for example select required flag bits,  Eg:(HTTPS_SUPPORT | HTTPV6 | HTTP_USER_DEFINED_CONTENT_TYPE)
 #define FLAGS                HTTPS_SUPPORT
 //! Server port number
-#define HTTP_PORT            443
+#define HTTP_PORT            443 // HTTP Server port number
 //! Server URL
 #define HTTP_URL             "rps/firmware.rps"
 //! Server Hostname
@@ -138,7 +149,7 @@ char *hostname = "si917updates.blob.core.windows.net";
 //! Server port number
 #define HTTP_PORT              80
 //! HTTP Server IP address.
-#define HTTP_SERVER_IP_ADDRESS "192.168.0.100"
+#define HTTP_SERVER_IP_ADDRESS "192.168.0.100" // HTTP Server IP address
 //! HTTP resource name
 #if (FW_UPDATE_TYPE == TA_FW_UPDATE)
 #define HTTP_URL "rps/firmware.rps"
@@ -146,7 +157,7 @@ char *hostname = "si917updates.blob.core.windows.net";
 #define HTTP_URL "isp.bin"
 #endif
 //! set HTTP hostname
-#define HTTP_HOSTNAME        "192.168.0.100"
+#define HTTP_HOSTNAME        "192.168.0.100" // HTTP server hostname
 char *hostname = HTTP_HOSTNAME;
 //! set HTTP extended header
 //! if NULL , driver fills default extended header
@@ -181,9 +192,16 @@ static const sl_wifi_device_configuration_t station_init_configuration = {
   .boot_config = { .oper_mode              = SL_SI91X_CLIENT_MODE,
                    .coex_mode              = SL_SI91X_WLAN_ONLY_MODE,
                    .feature_bit_map        = (SL_SI91X_FEAT_SECURITY_PSK | SL_SI91X_FEAT_AGGREGATION),
+#ifndef AZURE_ENABLE
                    .tcp_ip_feature_bit_map = (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_HTTP_CLIENT
                                               | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID | SL_SI91X_TCP_IP_FEAT_SSL
                                               | SL_SI91X_TCP_IP_FEAT_DNS_CLIENT),
+#endif
+#if defined(AZURE_ENABLE)
+                    .tcp_ip_feature_bit_map     = (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_HTTP_CLIENT
+                                              | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID | SL_SI91X_TCP_IP_FEAT_SSL
+                                              | SL_SI91X_TCP_IP_FEAT_DNS_CLIENT),
+#endif
                    .custom_feature_bit_map = SL_SI91X_CUSTOM_FEAT_EXTENTION_VALID,
                    .ext_custom_feature_bit_map =
                      (SL_SI91X_EXT_FEAT_XTAL_CLK | SL_SI91X_EXT_FEAT_UART_SEL_FOR_DEBUG_PRINTS | MEMORY_CONFIG
@@ -192,9 +210,14 @@ static const sl_wifi_device_configuration_t station_init_configuration = {
 #endif
                       ),
                    .bt_feature_bit_map = 0,
+#ifndef AZURE_ENABLE
                    .ext_tcp_ip_feature_bit_map =
                      (SL_SI91X_EXT_FEAT_HTTP_OTAF_SUPPORT | SL_SI91X_EXT_TCP_IP_SSL_16K_RECORD
                       | SL_SI91X_CONFIG_FEAT_EXTENTION_VALID),
+#endif
+#if defined(AZURE_ENABLE)
+                    .ext_tcp_ip_feature_bit_map = (SL_SI91X_EXT_FEAT_HTTP_OTAF_SUPPORT | SL_SI91X_EXT_TCP_IP_SSL_16K_RECORD),
+#endif
                    .ble_feature_bit_map     = 0,
                    .ble_ext_feature_bit_map = 0,
                    .config_feature_bit_map  = 0 }
@@ -305,8 +328,8 @@ void application_start(const void *unused)
   int32_t dns_retry_count = MAX_DNS_RETRY_COUNT;
 #endif
 
-  while (1) {
-    switch (app_state) {
+  while (1) { // application start, app_init
+    switch (app_state) { // state machine
       case WLAN_INITIAL_STATE: {
         //! Client initialization
         status = sl_net_init(SL_NET_WIFI_CLIENT_INTERFACE, &station_init_configuration, NULL, NULL);
@@ -342,6 +365,13 @@ void application_start(const void *unused)
 
       } break;
       case WLAN_FIRMWARE_UPDATE: {
+
+        if (sl_gpio_driver_get_pin((sl_gpio_t *)BUTTON1_PORT, BUTTON1_PIN) != SET) { // Reads the pin value for a single pin in a GPIO port.
+        break; 
+        }
+
+        printf("\r\nButton Pressed! Starting Firmware Update...\r\n");
+
 #if (FW_UPDATE_TYPE == TA_FW_UPDATE)
         status = sl_wifi_get_firmware_version(&version);
         print_firmware_version(&version);

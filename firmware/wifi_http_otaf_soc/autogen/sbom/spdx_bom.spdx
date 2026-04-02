@@ -13,7 +13,7 @@ DocumentNamespace: https://silabs.com
 
 ## Creation Information
 Creator: Organization: Silicon Laboratories, Inc.
-Created: 2026-04-01T14:49:07Z
+Created: 2026-04-01T21:39:35Z
 ## Relationships
 Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-wiseconnect3_sdk-3.5.2
 Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-simplicity_sdk-2025.6.3
@@ -103,6 +103,9 @@ Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-cmsis_usart_driver
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-romdriver_ulpss
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-rsilib_crc
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917
 
 ## Package Information
 PackageName: SIWG917Y111MGABA
@@ -964,6 +967,39 @@ PackageSupplier: Organization: NOASSERTION
 PackageLicenseConcluded: Zlib
 ## Relationships
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-rsilib_crc CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
+
+## Package Information
+PackageName: GPIO
+SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio
+PackageVersion: 3.5.2
+PrimaryPackagePurpose: LIBRARY
+PackageDownloadLocation: NOASSERTION
+PackageSupplier: Organization: NOASSERTION
+PackageLicenseConcluded: Zlib
+## Relationships
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
+
+## Package Information
+PackageName: SL GPIO Peripheral
+SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral
+PackageVersion: 3.5.2
+PrimaryPackagePurpose: LIBRARY
+PackageDownloadLocation: NOASSERTION
+PackageSupplier: Organization: NOASSERTION
+PackageLicenseConcluded: Zlib
+## Relationships
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
+
+## Package Information
+PackageName: LED
+SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917
+PackageVersion: 3.5.2
+PrimaryPackagePurpose: LIBRARY
+PackageDownloadLocation: NOASSERTION
+PackageSupplier: Organization: NOASSERTION
+PackageLicenseConcluded: MSLA
+## Relationships
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917 CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
 
 ## Package Information
 PackageName: Simplicity SDK Suite

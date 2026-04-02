@@ -1,5 +1,6 @@
 #ifndef PIN_CONFIG_H
 #define PIN_CONFIG_H
+#endif
 
 // $[USART0]
 // [USART0]$
@@ -161,6 +162,12 @@
 
 
 
+#ifndef BUTTON1_PORT                            
+#define BUTTON1_PORT                             HP
+#endif
+#ifndef BUTTON1_PIN                             
+#define BUTTON1_PIN                              9
+#endif
 
 
 
@@ -189,6 +196,12 @@
 
 
 
+#ifndef LED0_PORT                               
+#define LED0_PORT                                ULP
+#endif
+#ifndef LED0_PIN                                
+#define LED0_PIN                                 1
+#endif
 
 
 

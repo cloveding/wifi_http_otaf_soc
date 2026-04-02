@@ -25,11 +25,11 @@
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
+#define USER_CONFIGURATION_ENABLE 1 // enable, delete warning
+
 #ifndef __RTE_DEVICE_H
 #define __RTE_DEVICE_H
 
-#warning \
-  "Board-related MACROS are not defined for an OPN or SoC project. Install the [ENABLE USER CONFIGURATION] component or define USER_CONFIGURATION_ENABLE MACRO to 1, then define the macros in this file according to the board connections."
 #if USER_CONFIGURATION_ENABLE
 
 #include "rsi_ccp_user_config.h"
