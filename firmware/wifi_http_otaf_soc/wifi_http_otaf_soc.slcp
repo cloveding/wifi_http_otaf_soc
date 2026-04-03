@@ -34,6 +34,8 @@ component:
 - from: wiseconnect3_sdk
   id: basic_network_config_manager
 - from: wiseconnect3_sdk
+  id: mqtt
+- from: wiseconnect3_sdk
   id: network_manager
 - from: wiseconnect3_sdk
   id: si91x_memory_default_config

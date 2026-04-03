@@ -29,7 +29,7 @@
  ******************************************************************************/
 #include "sl_main_init.h"
 #include "sl_main_kernel.h"
-#include "app.h"
+// #include "app.h"
 
 int main(void)
 {

@@ -102,12 +102,7 @@ The application can be configured to suit your requirements and the development 
       ```c
       #define DEFAULT_WIFI_CLIENT_CREDENTIAL                 "YOUR_AP_PASSPHRASE" 
       ```
-    - DEFAULT_WIFI_CLIENT_SECURITY_TYPE refers to the security type if the access point is configured in **WPA/WPA2** or mixed security modes.
-
-      ```c
-      #define DEFAULT_WIFI_CLIENT_SECURITY_TYPE              SL_WIFI_WPA2 
-      ```
-  - Other STA instance configurations can be modified if required in **DEFAULT_WIFI_CLIENT_PROFILE** configuration structure.
+    - Other STA instance configurations can be modified if required in **DEFAULT_WIFI_CLIENT_PROFILE** configuration structure.
 - The following configurations in the ``app.c`` file can be configured as per requirements:
 
   - Select HTTPS CERTIFICATE INDEX
@@ -118,20 +113,7 @@ The application can be configured to suit your requirements and the development 
       //! set 1 for selecting SL_SI91X_HTTPS_CERTIFICATE_INDEX_1, set 2 for selecting SL_SI91X_HTTPS_CERTIFICATE_INDEX_2
       #define CERTIFICATE_INDEX 0
       ```
-  - Select Firmware update type.
-
-    - For NWP firmware upgrade, set FW_UPDATE_TYPE to TA_FW_UPDATE and for M4 firmware upgrade, set FW_UPDATE_TYPE to **M4_FW_UPDATE**. For Combined firmware upgrade, set FW_UPDATE_TYPE to COMBINED_FW_UPDATE.
-
-      ```c
-      //! Type of FW update
-      #define M4_FW_UPDATE       0
-      #define TA_FW_UPDATE       1
-      #define COMBINED_FW_UPDATE 2
-
-      //! Set FW update type
-      #define FW_UPDATE_TYPE TA_FW_UPDATE
-      ```
-    - Based on the type of server (**Apache**/AWS S3 bucket/**Azure Blob Storage**) from which the firmware files need to be downloaded, the following parameters need to be configured.
+  - - Based on the type of server (**Apache**/AWS S3 bucket/**Azure Blob Storage**) from which the firmware files need to be downloaded, the following parameters need to be configured.
 
       - Configure FLAGS to choose the version and security type to be enabled.
 
@@ -158,64 +140,6 @@ The application can be configured to suit your requirements and the development 
           Example: **key1:value1"\r\n"key2:value2"\r\n"**
         - USERNAME refers to the username to be used to access the HTTP resource.
         - PASSWORD refers to the password to be used to access the HTTP resource.
-      - 
-      - For **Azure Blob Storage**:
-
-        - Include Azure Baltimore certificate file for SSL connection.
-
-          > **Note:** This certificate is already included in the SDK in linear array format ``azure_baltimore_ca.pem.h``, which can be directly used for SSL connection to Azure Blob Storage.
-          >
-        - Extract the hostname from the Azure Blob Storage URL `https://<Your-Azure-Storage-Account-name>.blob.core.windows.net/<Your-container-name>/firmware.rps` and provide it in **hostname**.
-
-          > Example: For Azure Blob Storage URL `https://example1.blob.core.windows.net/example2/firmware.rps`, the hostname will be "example..blob.core.windows.net".
-          >
-        - Extract the firmware package name from the URL `<Your-Azure-Storage-Account-name>.blob.core.windows.net/<Your-container-name>/firmware.rps` and provide it in **HTTP_URL**.
-
-          > Example: For Azure Blob Storage URL `https://example1.blob.core.windows.net/example2/firmware.rps`, the HTTP_URL will be "example2/firmware.rps".
-          >
-        - Configurations for Azure Blob Storage
-
-          ```c
-          //Sample configurations
-          #include "azure_baltimore_ca.pem.h"        //Baltimore Root CA
-          #define FLAGS                             HTTPS_SUPPORT
-          #define HTTP_PORT                         443
-          #define HTTP_URL                          "rps/firmware.rps" //Firmware file name to download
-          #define USERNAME                          ""
-          #define PASSWORD                          ""
-          char *hostname                            ="example.blob.core.windows.net";
-          ```
-
-          > **Note:** The `USERNAME` and `PASSWORD` is provided as **an empty string ""** because the Azure Blob storage URL that was created has **public access provided**. Refer to [Configuring Azure Blob Storage](#configuring-azure-blob-storage) for information on how to upload firmware in Azure Blob storage.
-          >
-  - Modify the **station_init_configuration** values from `app.c` as per the requirements below.
-
-    - For **AWS S3 Bucket** and **Azure Blob Storage**:
-    - ```c
-      // station_init_configuration structure should contain the following configurations:
-      .tcp_ip_feature_bit_map     = (TCP_IP_FEAT_DHCPV4_CLIENT | TCP_IP_FEAT_HTTP_CLIENT| TCP_IP_FEAT_EXTENSION_VALID | TCP_IP_FEAT_SSL | TCP_IP_FEAT_DNS_CLIENT)
-
-      .ext_tcp_ip_feature_bit_map = (EXT_FEAT_HTTP_OTAF_SUPPORT | EXT_TCP_IP_SSL_16K_RECORD)
-      ```
-  - Modify the **credential loading values** from app.c as per the requirements below:
-
-    - The **[sl_net_set_credential()](https://docs.silabs.com/wiseconnect/3.0.13/wiseconnect-api-reference-guide-nwk-mgmt/net-credential-functions#sl-net-set-credential)** API expects the certificate in the form of a linear array. Convert **the pem certificate** into linear array form using the python script provided in the SDK `<SDK>/resources/scripts/certificate_script.py`.
-    - For example : If the certificate is ca-certificate.pem, enter the command in the following way:
-      `python certificate_script.py ca-certificate.pem`
-
-      - The script will generate ca-certificate.pem in which one linear array named ca-certificate contains the certificate.
-    - Root CA certificate needs to be converted as mentioned above.
-    - After the conversion, place the converted file in the `<SDK>/resources/certificates/` path and include the certificate file in ``app.c``
-    - For **Azure Server**:
-    - ```c
-      // Certificate includes
-      #include "azure_baltimore_ca.pem.h"
-
-      // Load Security Certificates
-      status = sl_net_set_credential(SL_NET_TLS_SERVER_CREDENTIAL_ID(0), SL_NET_SIGNING_CERTIFICATE, azure_baltimore_ca, (sizeof(azure_baltimore_ca) - 1));
-      ```
-
-> **Note**: For recommended settings, see the [recommendations guide](https://docs.silabs.com/wiseconnect/latest/wiseconnect-developers-guide-prog-recommended-settings/).
 
 ## Test the Application
 

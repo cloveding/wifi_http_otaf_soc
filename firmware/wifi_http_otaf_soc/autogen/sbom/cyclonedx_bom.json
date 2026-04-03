@@ -3,7 +3,7 @@
   "specVersion" : "1.6",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2026-04-01T21:39:35Z",
+    "timestamp" : "2026-04-03T01:01:36Z",
     "authors" : [ {
       "name" : "Silicon Laboratories, Inc."
     } ],
@@ -751,6 +751,15 @@
       "type" : "library",
       "bom-ref" : "wiseconnect3_sdk:3.5.2:sl_si91x_led_917",
       "name" : "LED",
+      "version" : "3.5.2",
+      "licenses" : [ {
+        "expression" : "MSLA"
+      } ]
+    }, {
+      "scope" : "required",
+      "type" : "library",
+      "bom-ref" : "wiseconnect3_sdk:3.5.2:mqtt",
+      "name" : "MQTT Client",
       "version" : "3.5.2",
       "licenses" : [ {
         "expression" : "MSLA"

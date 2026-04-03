@@ -46,6 +46,7 @@
 #include "pin_config.h"
 #include "RTE_Device_917.h"
 #include "sl_si91x_driver_gpio.h"
+#include "sl_gpio_board.h"
 
 // include certificates
 #include "aws_starfield_ca.pem.h"
@@ -54,7 +55,6 @@
 #include "cacert.pem.h"
 
 #define AZURE_ENABLE      1
-#define SET               0
 
 #ifdef SLI_SI91X_MCU_INTERFACE
 #include "sl_si91x_hal_soc_soft_reset.h"
@@ -113,12 +113,12 @@
 #define HTTP_PORT 443
 //! Server URL
 #if (FW_UPDATE_TYPE == TA_FW_UPDATE)
-#define HTTP_URL "rps/firmware.rps" // HTTP resource name
+#define HTTP_URL "rps/blinky.rps" // HTTP resource name
 #else
 #define HTTP_URL "isp.bin"
 #endif
 //! Server Hostname
-char *hostname = "otafaws.s3.ap-south-1.amazonaws.com";
+char *hostname = "otau.blob.core.windows.net";
 //! set HTTP extended header
 //! if NULL , driver fills default extended header
 #define HTTP_EXTENDED_HEADER NULL // HTTP extended header
@@ -134,9 +134,9 @@ char *hostname = "otafaws.s3.ap-south-1.amazonaws.com";
 //! Server port number
 #define HTTP_PORT            443 // HTTP Server port number
 //! Server URL
-#define HTTP_URL             "rps/firmware.rps"
+#define HTTP_URL             "rps/blinky.rps"
 //! Server Hostname
-char *hostname = "si917updates.blob.core.windows.net";
+char *hostname = "otau.blob.core.windows.net";
 //! set HTTP extended header
 #define HTTP_EXTENDED_HEADER NULL
 //! set Username
@@ -152,7 +152,7 @@ char *hostname = "si917updates.blob.core.windows.net";
 #define HTTP_SERVER_IP_ADDRESS "192.168.0.100" // HTTP Server IP address
 //! HTTP resource name
 #if (FW_UPDATE_TYPE == TA_FW_UPDATE)
-#define HTTP_URL "rps/firmware.rps"
+#define HTTP_URL "rps/blinky.rps"
 #else
 #define HTTP_URL "isp.bin"
 #endif
@@ -172,6 +172,8 @@ char *hostname = HTTP_HOSTNAME;
 /******************************************************
  *               Variable Definitions
  ******************************************************/
+static sl_si91x_gpio_pin_config_t sl_gpio_pin_config = { { SL_SI91X_GPIO_9_PIN, GPIO_PIN_NUMBER9 }, GPIO_INPUT };
+
 const osThreadAttr_t thread_attributes = {
   .name       = "app",
   .attr_bits  = 0,
@@ -256,18 +258,22 @@ void app_init(const void *unused)
 {
   UNUSED_PARAMETER(unused);
   osThreadNew((osThreadFunc_t)application_start, NULL, &thread_attributes); // create new thread
+
+  // sl_gpio_driver_init();
+  // sl_gpio_set_configuration(sl_gpio_pin_config);
+
 }
 
 #if LOAD_CERTIFICATE
 sl_status_t clear_and_load_certificates_in_flash(void)
 {
   sl_status_t status;
-  void *cert           = NULL;
-  uint32_t cert_length = 0;
+  // void *cert           = NULL;
+  // uint32_t cert_length = 0;
 
 #ifdef AWS_ENABLE
-  cert        = (void *)aws_starfield_ca;
-  cert_length = (sizeof(aws_starfield_ca) - 1);
+  // cert        = (void *)aws_starfield_ca;
+  // cert_length = (sizeof(aws_starfield_ca) - 1);
 #elif AZURE_ENABLE
   cert        = (void *)azure_baltimore_ca;
   cert_length = (sizeof(azure_baltimore_ca) - 1);
@@ -277,10 +283,15 @@ sl_status_t clear_and_load_certificates_in_flash(void)
 #endif
 
   //! Load SSL CA certificate
-  status = sl_net_set_credential(SL_NET_TLS_SERVER_CREDENTIAL_ID(CERTIFICATE_INDEX),
-                                 SL_NET_SIGNING_CERTIFICATE,
-                                 cert,
-                                 cert_length);
+  // status = sl_net_set_credential(SL_NET_TLS_SERVER_CREDENTIAL_ID(CERTIFICATE_INDEX),
+  //                                SL_NET_SIGNING_CERTIFICATE,
+  //                                cert,
+  //                                cert_length);
+  //! Load Security Certificates
+     status = sl_net_set_credential(SL_NET_TLS_SERVER_CREDENTIAL_ID(0),
+                               SL_NET_SIGNING_CERTIFICATE,
+                               silabs_dgcert_ca,
+                               (sizeof(silabs_dgcert_ca) - 1));
   if (status != SL_STATUS_OK) {
     printf("\r\nLoading TLS CA certificate in to FLASH Failed, Error Code : 0x%lX\r\n", status);
   } else {
@@ -349,7 +360,23 @@ void application_start(const void *unused)
           }
         }
 #endif
+
+        sl_mac_address_t my_mac;
+        sl_status_t mac_status;
+
+        mac_status = sl_wifi_get_mac_address(SL_WIFI_CLIENT_INTERFACE, &my_mac);
+
+        if (mac_status == SL_STATUS_OK) {
+            printf("\r\nSuccessfully retrieved MAC!\r\n");
+            printf("MAC: ");
+            print_mac_address(&my_mac);
+            printf("\r\n");
+        } else {
+            printf("\r\nMAC Error: 0x%lX\r\n", mac_status);
+        }
+
         app_state = WLAN_UNCONNECTED_STATE;
+
       } break;
       case WLAN_UNCONNECTED_STATE: {
         sl_wifi_set_join_callback(join_callback_handler, NULL);
@@ -365,8 +392,10 @@ void application_start(const void *unused)
 
       } break;
       case WLAN_FIRMWARE_UPDATE: {
+        uint8_t pin_value = 1;
+        sl_gpio_driver_get_pin(&sl_gpio_pin_config.port_pin, &pin_value);
 
-        if (sl_gpio_driver_get_pin((sl_gpio_t *)BUTTON1_PORT, BUTTON1_PIN) != SET) { // Reads the pin value for a single pin in a GPIO port.
+        if (pin_value != 0) { // Reads the pin value for a single pin in a GPIO port.
         break; 
         }
 
@@ -491,10 +520,4 @@ static sl_status_t http_fw_update_response_handler(sl_wifi_event_t event,
   }
   response = true;
   return SL_STATUS_OK;
-}
-
-void app_process_action(const void *unused) {
-
-  // button triggered update
-  
 }

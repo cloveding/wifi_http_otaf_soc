@@ -13,7 +13,7 @@ DocumentNamespace: https://silabs.com
 
 ## Creation Information
 Creator: Organization: Silicon Laboratories, Inc.
-Created: 2026-04-01T21:39:35Z
+Created: 2026-04-03T01:01:36Z
 ## Relationships
 Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-wiseconnect3_sdk-3.5.2
 Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-simplicity_sdk-2025.6.3
@@ -106,6 +106,7 @@ Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-mqtt
 
 ## Package Information
 PackageName: SIWG917Y111MGABA
@@ -1000,6 +1001,17 @@ PackageSupplier: Organization: NOASSERTION
 PackageLicenseConcluded: MSLA
 ## Relationships
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917 CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
+
+## Package Information
+PackageName: MQTT Client
+SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-mqtt
+PackageVersion: 3.5.2
+PrimaryPackagePurpose: LIBRARY
+PackageDownloadLocation: NOASSERTION
+PackageSupplier: Organization: NOASSERTION
+PackageLicenseConcluded: MSLA
+## Relationships
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-mqtt CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
 
 ## Package Information
 PackageName: Simplicity SDK Suite
