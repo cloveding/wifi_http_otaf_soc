@@ -1,7 +1,15 @@
 {
     "folders": [
         {
-            "path": "../wifi_http_otaf_soc/firmware/wifi_http_otaf_soc"
+            "path": "../wifi_http_otaf_soc/wifi_http_otaf_soc_2708A"
+        },
+        {
+            "name": "sl_si91x_gspi",
+            "path": "sl_si91x_gspi"
+        },
+        {
+            "name": "sl_si91x_i2c_driver_leader",
+            "path": "sl_si91x_i2c_driver_leader"
         }
     ],
     "siWorkspaceRoot": "/Users/dingdang/ese5160/wifi_http_otaf_soc"

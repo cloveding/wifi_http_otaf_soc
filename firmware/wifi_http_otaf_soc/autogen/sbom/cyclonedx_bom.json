@@ -3,7 +3,7 @@
   "specVersion" : "1.6",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2026-04-03T01:01:36Z",
+    "timestamp" : "2026-04-12T17:50:12Z",
     "authors" : [ {
       "name" : "Silicon Laboratories, Inc."
     } ],
@@ -39,6 +39,15 @@
     }, {
       "scope" : "required",
       "type" : "library",
+      "bom-ref" : "wiseconnect3_sdk:3.5.2:mqtt",
+      "name" : "MQTT Client",
+      "version" : "3.5.2",
+      "licenses" : [ {
+        "expression" : "MSLA"
+      } ]
+    }, {
+      "scope" : "required",
+      "type" : "library",
       "bom-ref" : "wiseconnect3_sdk:3.5.2:network_manager",
       "name" : "Network Manager",
       "version" : "3.5.2",
@@ -57,11 +66,29 @@
     }, {
       "scope" : "required",
       "type" : "library",
+      "bom-ref" : "wiseconnect3_sdk:3.5.2:sl_gpio",
+      "name" : "GPIO",
+      "version" : "3.5.2",
+      "licenses" : [ {
+        "expression" : "Zlib"
+      } ]
+    }, {
+      "scope" : "required",
+      "type" : "library",
       "bom-ref" : "wiseconnect3_sdk:3.5.2:sl_si91x_internal_stack",
       "name" : "Internal Network Stack",
       "version" : "3.5.2",
       "licenses" : [ {
         "expression" : "Zlib"
+      } ]
+    }, {
+      "scope" : "required",
+      "type" : "library",
+      "bom-ref" : "wiseconnect3_sdk:3.5.2:sl_si91x_led_917",
+      "name" : "LED",
+      "version" : "3.5.2",
+      "licenses" : [ {
+        "expression" : "MSLA"
       } ]
     }, {
       "scope" : "required",
@@ -356,6 +383,15 @@
       "type" : "library",
       "bom-ref" : "wiseconnect3_sdk:3.5.2:rsilib_udma",
       "name" : "UDMA",
+      "version" : "3.5.2",
+      "licenses" : [ {
+        "expression" : "Zlib"
+      } ]
+    }, {
+      "scope" : "required",
+      "type" : "library",
+      "bom-ref" : "wiseconnect3_sdk:3.5.2:sl_gpio_peripheral",
+      "name" : "SL GPIO Peripheral",
       "version" : "3.5.2",
       "licenses" : [ {
         "expression" : "Zlib"
@@ -727,42 +763,6 @@
       "version" : "3.5.2",
       "licenses" : [ {
         "expression" : "Zlib"
-      } ]
-    }, {
-      "scope" : "required",
-      "type" : "library",
-      "bom-ref" : "wiseconnect3_sdk:3.5.2:sl_gpio",
-      "name" : "GPIO",
-      "version" : "3.5.2",
-      "licenses" : [ {
-        "expression" : "Zlib"
-      } ]
-    }, {
-      "scope" : "required",
-      "type" : "library",
-      "bom-ref" : "wiseconnect3_sdk:3.5.2:sl_gpio_peripheral",
-      "name" : "SL GPIO Peripheral",
-      "version" : "3.5.2",
-      "licenses" : [ {
-        "expression" : "Zlib"
-      } ]
-    }, {
-      "scope" : "required",
-      "type" : "library",
-      "bom-ref" : "wiseconnect3_sdk:3.5.2:sl_si91x_led_917",
-      "name" : "LED",
-      "version" : "3.5.2",
-      "licenses" : [ {
-        "expression" : "MSLA"
-      } ]
-    }, {
-      "scope" : "required",
-      "type" : "library",
-      "bom-ref" : "wiseconnect3_sdk:3.5.2:mqtt",
-      "name" : "MQTT Client",
-      "version" : "3.5.2",
-      "licenses" : [ {
-        "expression" : "MSLA"
       } ]
     } ]
   }, {

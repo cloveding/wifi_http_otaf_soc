@@ -1,0 +1,4 @@
+/Users/dingdang/ese5160/wifi_http_otaf_soc/wifi_http_otaf_soc_2708A/cmake_gcc/build/CMakeFiles/slc.dir
+/Users/dingdang/ese5160/wifi_http_otaf_soc/wifi_http_otaf_soc_2708A/cmake_gcc/build/CMakeFiles/wifi_http_otaf_soc_2708A.dir
+/Users/dingdang/ese5160/wifi_http_otaf_soc/wifi_http_otaf_soc_2708A/cmake_gcc/build/CMakeFiles/edit_cache.dir
+/Users/dingdang/ese5160/wifi_http_otaf_soc/wifi_http_otaf_soc_2708A/cmake_gcc/build/CMakeFiles/rebuild_cache.dir

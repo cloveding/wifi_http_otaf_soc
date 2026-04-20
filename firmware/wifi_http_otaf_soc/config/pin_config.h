@@ -1,6 +1,5 @@
 #ifndef PIN_CONFIG_H
 #define PIN_CONFIG_H
-#endif
 
 // $[USART0]
 // [USART0]$
@@ -217,6 +216,7 @@
 
 // [CUSTOM_PIN_NAME]$
 
+#endif // PIN_CONFIG_H
 // $[SDC_CH1]
 // [SDC_CH1]$
 

@@ -10,7 +10,7 @@ referenced in this SBOM.)
 -->
 <bom xmlns="http://cyclonedx.org/schema/bom/1.6" version="1">
   <metadata>
-    <timestamp>2026-04-03T01:01:36Z</timestamp>
+    <timestamp>2026-04-12T17:50:12Z</timestamp>
     <authors>
       <author>
         <name>Silicon Laboratories, Inc.</name>
@@ -36,6 +36,13 @@ referenced in this SBOM.)
             <expression>MSLA</expression>
           </licenses>
         </component>
+        <component bom-ref="wiseconnect3_sdk:3.5.2:mqtt" type="library">
+          <name>MQTT Client</name>
+          <version>3.5.2</version>
+          <licenses>
+            <expression>MSLA</expression>
+          </licenses>
+        </component>
         <component bom-ref="wiseconnect3_sdk:3.5.2:network_manager" type="library">
           <name>Network Manager</name>
           <version>3.5.2</version>
@@ -50,11 +57,25 @@ referenced in this SBOM.)
             <expression>Zlib</expression>
           </licenses>
         </component>
+        <component bom-ref="wiseconnect3_sdk:3.5.2:sl_gpio" type="library">
+          <name>GPIO</name>
+          <version>3.5.2</version>
+          <licenses>
+            <expression>Zlib</expression>
+          </licenses>
+        </component>
         <component bom-ref="wiseconnect3_sdk:3.5.2:sl_si91x_internal_stack" type="library">
           <name>Internal Network Stack</name>
           <version>3.5.2</version>
           <licenses>
             <expression>Zlib</expression>
+          </licenses>
+        </component>
+        <component bom-ref="wiseconnect3_sdk:3.5.2:sl_si91x_led_917" type="library">
+          <name>LED</name>
+          <version>3.5.2</version>
+          <licenses>
+            <expression>MSLA</expression>
           </licenses>
         </component>
         <component bom-ref="wiseconnect3_sdk:3.5.2:sl_si91x_mem_pool_buffers_with_quota" type="library">
@@ -283,6 +304,13 @@ referenced in this SBOM.)
         </component>
         <component bom-ref="wiseconnect3_sdk:3.5.2:rsilib_udma" type="library">
           <name>UDMA</name>
+          <version>3.5.2</version>
+          <licenses>
+            <expression>Zlib</expression>
+          </licenses>
+        </component>
+        <component bom-ref="wiseconnect3_sdk:3.5.2:sl_gpio_peripheral" type="library">
+          <name>SL GPIO Peripheral</name>
           <version>3.5.2</version>
           <licenses>
             <expression>Zlib</expression>
@@ -576,34 +604,6 @@ referenced in this SBOM.)
           <version>3.5.2</version>
           <licenses>
             <expression>Zlib</expression>
-          </licenses>
-        </component>
-        <component bom-ref="wiseconnect3_sdk:3.5.2:sl_gpio" type="library">
-          <name>GPIO</name>
-          <version>3.5.2</version>
-          <licenses>
-            <expression>Zlib</expression>
-          </licenses>
-        </component>
-        <component bom-ref="wiseconnect3_sdk:3.5.2:sl_gpio_peripheral" type="library">
-          <name>SL GPIO Peripheral</name>
-          <version>3.5.2</version>
-          <licenses>
-            <expression>Zlib</expression>
-          </licenses>
-        </component>
-        <component bom-ref="wiseconnect3_sdk:3.5.2:sl_si91x_led_917" type="library">
-          <name>LED</name>
-          <version>3.5.2</version>
-          <licenses>
-            <expression>MSLA</expression>
-          </licenses>
-        </component>
-        <component bom-ref="wiseconnect3_sdk:3.5.2:mqtt" type="library">
-          <name>MQTT Client</name>
-          <version>3.5.2</version>
-          <licenses>
-            <expression>MSLA</expression>
           </licenses>
         </component>
       </components>

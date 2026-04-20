@@ -1,0 +1,15 @@
+#CRC Codes for initially generated config files -- do not modify!
+SEGGER_RTT_Conf.h=1147949881
+sl_iostream_usart_vcom_config.h=668175890
+sl_si91x_debug_swo_config.h=-1894992666
+sl_si91x_gspi_common_config.h=2029155083
+sl_si91x_gspi_config.h=1978602558
+sl_si91x_i2c_init_i2c0_config.h=1785089711
+sl_si91x_iostream_vuart_config.h=-1375225794
+sl_si91x_led_config.h=1423938287
+sl_si91x_led_init_led0_config.h=1897233675
+sl_si91x_uart_common_config.h=1751047227
+sl_si91x_uart_config.h=514074113
+sl_si91x_usart_common_config.h=272376598
+sl_si91x_usart_config.h=-896958500
+sl_sleeptimer_config.h=847044378

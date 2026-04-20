@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include "wifi_secrets.h"
 #include "sl_net_wifi_types.h"
 
 #if defined(__GNUC__)
@@ -44,8 +43,6 @@
 #define REQUIRED_IP_TYPE SL_IPV4
 #endif
 
-// Station Mode
-
 #ifndef DEFAULT_WIFI_CLIENT_PROFILE_SSID
 #define DEFAULT_WIFI_CLIENT_PROFILE_SSID "YOUR_AP_SSID"
 #endif
@@ -53,8 +50,6 @@
 #ifndef DEFAULT_WIFI_CLIENT_CREDENTIAL
 #define DEFAULT_WIFI_CLIENT_CREDENTIAL "YOUR_AP_PASSPHRASE"
 #endif
-
-// AP Mode
 
 #ifndef DEFAULT_WIFI_AP_PROFILE_SSID
 #define DEFAULT_WIFI_AP_PROFILE_SSID "MY_AP_SSID"

@@ -1,0 +1,464 @@
+/***************************************************************************/ /**
+ * @file
+ * @brief HTTP OTAF + MQTT Example Application
+ *        - OTA firmware update disabled, Wi-Fi connection retained
+ *        - MQTT thread added:
+ *            * Subscribes to "LED_CONTROL" topic → controls debug LED
+ *            * Reads debug button → publishes "BUTTON_STATE" topic
+ ******************************************************************************/
+
+#include "cmsis_os2.h"
+#include "sl_board_configuration.h"
+#include "sl_net.h"
+#include "sl_wifi_types.h"
+#include <string.h>
+#include "sl_wifi.h"
+#include "sl_wifi_callback_framework.h"
+#include "firmware_upgradation.h"
+#include "sl_net_dns.h"
+#include "sl_utility.h"
+#include "sl_net_si91x.h"
+#include "sl_net_wifi_types.h"
+#include "pin_config.h"
+#include "RTE_Device_917.h"
+#include "sl_si91x_driver_gpio.h"
+#include "sl_gpio_board.h"
+
+// MQTT headers (added)
+#include "sl_mqtt_client.h"
+#include "sl_constants.h"
+
+// include certificates
+#include "aws_starfield_ca.pem.h"
+#include "silabs_dgcert_ca.pem.h"
+#include "cacert.pem.h"
+
+#define AZURE_ENABLE 1
+
+#ifdef SLI_SI91X_MCU_INTERFACE
+#include "sl_si91x_hal_soc_soft_reset.h"
+#endif
+
+/******************************************************
+ *                      Macros
+ ******************************************************/
+
+/******************************************************
+ *                    Constants
+ ******************************************************/
+//! Load certificate to device flash
+#define LOAD_CERTIFICATE 1
+
+#define BIT(a) ((uint32_t)1U << a)
+#define HTTPS_SUPPORT BIT(0)
+
+#define CERTIFICATE_INDEX 0
+
+// ── MQTT broker settings ─────────────────────────────────────────────────────
+#define MQTT_BROKER_IP        "52.159.96.72"
+#define MQTT_BROKER_PORT      1883
+
+#define MQTT_CLIENT_ID        "SI91X-MCU-CLIENT"
+#define MQTT_CLIENT_PORT      1
+
+// Node-RED → MCU : controls the debug LED
+#define LED_CONTROL_TOPIC     "LED_CONTROL"
+// MCU → Node-RED : reports debug button state
+#define BUTTON_STATE_TOPIC    "BUTTON_STATE"
+
+#define MQTT_KEEP_ALIVE       2000
+#define MQTT_CONNECT_TIMEOUT  5000
+#define MQTT_KEEPALIVE_RETRIES 0
+#define MQTT_QOS              SL_MQTT_QOS_LEVEL_1
+
+// Button poll interval (ms)
+#define BUTTON_POLL_MS        100
+
+/******************************************************
+ *               Variable Definitions
+ ******************************************************/
+
+// GPIO pin config — debug button (GPIO11)
+static sl_si91x_gpio_pin_config_t sl_gpio_pin_config = {
+  { SL_SI91X_GPIO_11_PORT, GPIO_PIN_NUMBER11 }, GPIO_INPUT
+};
+
+// GPIO pin config — debug LED
+static sl_si91x_gpio_pin_config_t sl_led_pin_config = {
+  { SL_SI91X_GPIO_10_PORT, GPIO_PIN_NUMBER10 }, GPIO_OUTPUT
+};
+
+// ── Main app thread attributes ────────────────────────────────────────────────
+const osThreadAttr_t thread_attributes = {
+  .name       = "app",
+  .attr_bits  = 0,
+  .cb_mem     = 0,
+  .cb_size    = 0,
+  .stack_mem  = 0,
+  .stack_size = 3072,
+  .priority   = osPriorityLow,
+  .tz_module  = 0,
+  .reserved   = 0,
+};
+
+// ── MQTT thread attributes (added) ───────────────────────────────────────────
+static const osThreadAttr_t mqtt_thread_attributes = {
+  .name       = "mqtt",
+  .attr_bits  = 0,
+  .cb_mem     = 0,
+  .cb_size    = 0,
+  .stack_mem  = 0,
+  .stack_size = 4096,           // a bit more stack for MQTT
+  .priority   = osPriorityNormal,
+  .tz_module  = 0,
+  .reserved   = 0,
+};
+
+// ── Wi-Fi device configuration — unchanged from original ─────────────────────
+static const sl_wifi_device_configuration_t station_init_configuration = {
+  .boot_option = LOAD_NWP_FW,
+  .mac_address = NULL,
+  .band        = SL_SI91X_WIFI_BAND_2_4GHZ,
+  .region_code = US,
+  .boot_config = {
+    .oper_mode              = SL_SI91X_CLIENT_MODE,
+    .coex_mode              = SL_SI91X_WLAN_ONLY_MODE,
+    .feature_bit_map        = (SL_SI91X_FEAT_SECURITY_PSK | SL_SI91X_FEAT_AGGREGATION),
+#if defined(AZURE_ENABLE)
+    .tcp_ip_feature_bit_map = (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_HTTP_CLIENT
+                               | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID | SL_SI91X_TCP_IP_FEAT_SSL
+                               | SL_SI91X_TCP_IP_FEAT_DNS_CLIENT),
+#else
+    .tcp_ip_feature_bit_map = (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_HTTP_CLIENT
+                               | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID | SL_SI91X_TCP_IP_FEAT_SSL
+                               | SL_SI91X_TCP_IP_FEAT_DNS_CLIENT),
+#endif
+    .custom_feature_bit_map = SL_SI91X_CUSTOM_FEAT_EXTENTION_VALID,
+    .ext_custom_feature_bit_map = (
+      SL_SI91X_EXT_FEAT_XTAL_CLK | SL_SI91X_EXT_FEAT_UART_SEL_FOR_DEBUG_PRINTS | MEMORY_CONFIG
+#if defined(SLI_SI917) || defined(SLI_SI915)
+      | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
+#endif
+    ),
+    .bt_feature_bit_map = 0,
+    // ── OTA ext flag removed; EMB_MQTT flag added ──────────────────────────
+#if defined(AZURE_ENABLE)
+    .ext_tcp_ip_feature_bit_map = (SL_SI91X_EXT_TCP_IP_SSL_16K_RECORD
+                                   | SL_SI91X_EXT_EMB_MQTT_ENABLE),
+#else
+    .ext_tcp_ip_feature_bit_map = (SL_SI91X_EXT_TCP_IP_SSL_16K_RECORD
+                                   | SL_SI91X_CONFIG_FEAT_EXTENTION_VALID
+                                   | SL_SI91X_EXT_EMB_MQTT_ENABLE),
+#endif
+    .ble_feature_bit_map     = 0,
+    .ble_ext_feature_bit_map = 0,
+    .config_feature_bit_map  = 0
+  }
+};
+
+//! Enumeration for states in application — unchanged
+typedef enum {
+  WLAN_INITIAL_STATE = 0,
+  WLAN_UNCONNECTED_STATE,
+  WLAN_FIRMWARE_UPDATE,   // repurposed: now just signals "connected, start MQTT"
+  WLAN_NET_DOWN_STATE,
+  WLAN_OTA_UPDATE_DONE,
+} wlan_app_state_t;
+
+volatile wlan_app_state_t app_state;
+
+// ── MQTT objects (added) ──────────────────────────────────────────────────────
+static sl_mqtt_client_t           mqtt_client        = { 0 };
+static sl_mqtt_broker_t           mqtt_broker        = { 0 };
+static sl_mqtt_client_configuration_t mqtt_cfg       = { 0 };
+static volatile uint8_t           mqtt_connected     = 0;
+static volatile uint8_t           mqtt_done          = 0;
+
+/******************************************************
+ *               Function Declarations
+ ******************************************************/
+void application_start(const void *unused);
+static void mqtt_thread_entry(void *argument);
+
+#if LOAD_CERTIFICATE
+static sl_status_t clear_and_load_certificates_in_flash(void);
+#endif
+
+// MQTT callbacks (added)
+static void mqtt_event_handler(void *client, sl_mqtt_client_event_t event,
+                               void *event_data, void *context);
+static void mqtt_message_handler(void *client, sl_mqtt_client_message_t *msg,
+                                 void *context);
+
+/******************************************************
+ *               Function Definitions
+ ******************************************************/
+
+void app_init(const void *unused)
+{
+  UNUSED_PARAMETER(unused);
+  osThreadNew((osThreadFunc_t)application_start, NULL, &thread_attributes);
+}
+
+#if LOAD_CERTIFICATE
+sl_status_t clear_and_load_certificates_in_flash(void)
+{
+  sl_status_t status;
+
+  status = sl_net_set_credential(SL_NET_TLS_SERVER_CREDENTIAL_ID(0),
+                                 SL_NET_SIGNING_CERTIFICATE,
+                                 silabs_dgcert_ca,
+                                 (sizeof(silabs_dgcert_ca) - 1));
+  if (status != SL_STATUS_OK) {
+    printf("\r\nLoading TLS CA certificate in to FLASH Failed, Error Code : 0x%lX\r\n", status);
+  } else {
+    printf("\r\nLoad TLS CA certificate at index %d Success\r\n", CERTIFICATE_INDEX);
+  }
+  return status;
+}
+#endif
+
+sl_status_t join_callback_handler(sl_wifi_event_t event, char *result,
+                                  uint32_t result_length, void *arg)
+{
+  UNUSED_PARAMETER(result);
+  UNUSED_PARAMETER(arg);
+  app_state = WLAN_UNCONNECTED_STATE;
+  printf("\r\nIn Join CB\r\n");
+  if (SL_WIFI_CHECK_IF_EVENT_FAILED(event)) {
+    printf("F: Initiating rejoin %lu bytes payload\n", result_length);
+    return SL_STATUS_FAIL;
+  }
+  return SL_STATUS_OK;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Main application thread — Wi-Fi state machine
+// ─────────────────────────────────────────────────────────────────────────────
+void application_start(const void *unused)
+{
+  UNUSED_PARAMETER(unused);
+  sl_status_t status = SL_STATUS_OK;
+
+  while (1) {
+    switch (app_state) {
+
+      case WLAN_INITIAL_STATE: {
+        status = sl_net_init(SL_NET_WIFI_CLIENT_INTERFACE,
+                             &station_init_configuration, NULL, NULL);
+        if (status != SL_STATUS_OK) {
+          printf("\r\nWi-Fi Client initialization failed, Error Code: 0x%lX\r\n", status);
+          return;
+        }
+        printf("\r\nWi-Fi Client initialization success\r\n");
+
+#if LOAD_CERTIFICATE
+        status = clear_and_load_certificates_in_flash();
+        if (status != SL_STATUS_OK) {
+          printf("\r\nUnexpected error while loading certificate: 0x%lX\r\n", status);
+          return;
+        }
+#endif
+        // Init GPIO for button (input) and LED (output)
+        sl_gpio_driver_init();
+        sl_gpio_set_configuration(sl_gpio_pin_config);
+        sl_gpio_set_configuration(sl_led_pin_config);
+
+        app_state = WLAN_UNCONNECTED_STATE;
+      } break;
+
+      case WLAN_UNCONNECTED_STATE: {
+        sl_wifi_set_join_callback(join_callback_handler, NULL);
+        status = sl_net_up(SL_NET_WIFI_CLIENT_INTERFACE,
+                           SL_NET_DEFAULT_WIFI_CLIENT_PROFILE_ID);
+        if (status != SL_STATUS_OK) {
+          printf("\r\nFailed to bring Wi-Fi client interface up: 0x%lX\r\n", status);
+          app_state = WLAN_UNCONNECTED_STATE;
+          break;
+        }
+        printf("\r\nWi-Fi Client interface up\r\n");
+        app_state = WLAN_FIRMWARE_UPDATE;   // transition to "ready" state
+      } break;
+
+      case WLAN_FIRMWARE_UPDATE: {
+        // ── OTA disabled: spin up MQTT thread instead ─────────────────────
+        printf("\r\nWi-Fi connected. Starting MQTT thread...\r\n");
+        osThreadNew(mqtt_thread_entry, NULL, &mqtt_thread_attributes);
+        app_state = WLAN_OTA_UPDATE_DONE;   // park main thread
+      } break;
+
+      case WLAN_OTA_UPDATE_DONE:
+      default:
+        osDelay(osWaitForever); // idle — MQTT thread takes over
+        break;
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  MQTT event callback
+// ─────────────────────────────────────────────────────────────────────────────
+static void mqtt_event_handler(void *client, sl_mqtt_client_event_t event,
+                               void *event_data, void *context)
+{
+  (void)event_data;
+  (void)context;
+  sl_status_t status;
+
+  switch (event) {
+
+    case SL_MQTT_CLIENT_CONNECTED_EVENT:
+      printf("\r\n[MQTT] Connected to broker\r\n");
+      mqtt_connected = 1;
+
+      // Subscribe to LED control topic from Node-RED
+      status = sl_mqtt_client_subscribe(client,
+                                        (uint8_t *)LED_CONTROL_TOPIC,
+                                        strlen(LED_CONTROL_TOPIC),
+                                        MQTT_QOS,
+                                        0,
+                                        mqtt_message_handler,
+                                        (void *)LED_CONTROL_TOPIC);
+      if (status != SL_STATUS_IN_PROGRESS) {
+        printf("[MQTT] Subscribe failed: 0x%lX\r\n", status);
+      }
+      break;
+
+    case SL_MQTT_CLIENT_SUBSCRIBED_EVENT:
+      printf("[MQTT] Subscribed to: %s\r\n", LED_CONTROL_TOPIC);
+      break;
+
+    case SL_MQTT_CLIENT_MESSAGE_PUBLISHED_EVENT:
+      // publish ACK — nothing to do
+      break;
+
+    case SL_MQTT_CLIENT_DISCONNECTED_EVENT:
+      printf("[MQTT] Disconnected\r\n");
+      mqtt_connected = 0;
+      mqtt_done      = 1;
+      break;
+
+    case SL_MQTT_CLIENT_ERROR_EVENT:
+      printf("[MQTT] Error event\r\n");
+      mqtt_connected = 0;
+      mqtt_done      = 1;
+      break;
+
+    default:
+      break;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  MQTT message callback — Node-RED LED switch → MCU LED
+//  Expected payload: "ON" = LED on, "OFF" = LED off
+// ─────────────────────────────────────────────────────────────────────────────
+static void mqtt_message_handler(void *client, sl_mqtt_client_message_t *msg,
+                                 void *context)
+{
+  (void)client;
+  (void)context;
+
+  if (msg->content_length >= 2 &&
+      strncmp((char *)msg->content, "ON", msg->content_length) == 0) {
+    sl_gpio_driver_set_pin(&sl_led_pin_config.port_pin);
+    printf("[MQTT] LED ON\r\n");
+  } else if (msg->content_length >= 3 &&
+             strncmp((char *)msg->content, "OFF", msg->content_length) == 0) {
+    sl_gpio_driver_clear_pin(&sl_led_pin_config.port_pin);
+    printf("[MQTT] LED OFF\r\n");
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  MQTT thread — connects to broker, polls button, publishes state
+// ─────────────────────────────────────────────────────────────────────────────
+static void mqtt_thread_entry(void *argument)
+{
+  (void)argument;
+  sl_status_t status;
+
+  // ── 1. Configure broker ──────────────────────────────────────────────────
+  mqtt_broker.port                    = MQTT_BROKER_PORT;
+  mqtt_broker.is_connection_encrypted = 0;
+  mqtt_broker.connect_timeout         = MQTT_CONNECT_TIMEOUT;
+  mqtt_broker.keep_alive_interval     = MQTT_KEEP_ALIVE;
+  mqtt_broker.keep_alive_retries      = MQTT_KEEPALIVE_RETRIES;
+
+  status = sl_net_inet_addr(MQTT_BROKER_IP, &mqtt_broker.ip.ip.v4.value);
+  if (status != SL_STATUS_OK) {
+    printf("[MQTT] IP conversion failed: 0x%lX\r\n", status);
+    return;
+  }
+  mqtt_broker.ip.type = SL_IPV4;
+
+  // ── 2. Configure client ──────────────────────────────────────────────────
+  mqtt_cfg.is_clean_session = 1;
+  mqtt_cfg.client_id        = (uint8_t *)MQTT_CLIENT_ID;
+  mqtt_cfg.client_id_length = strlen(MQTT_CLIENT_ID);
+  mqtt_cfg.client_port      = MQTT_CLIENT_PORT;
+
+  // ── 3. Init MQTT client ──────────────────────────────────────────────────
+  status = sl_mqtt_client_init(&mqtt_client, mqtt_event_handler);
+  if (status != SL_STATUS_OK) {
+    printf("[MQTT] Init failed: 0x%lX\r\n", status);
+    return;
+  }
+  printf("[MQTT] Client init success\r\n");
+
+  // ── 4. Connect ───────────────────────────────────────────────────────────
+  status = sl_mqtt_client_connect(&mqtt_client, &mqtt_broker,
+                                  NULL,           // no last-will
+                                  &mqtt_cfg, 0);
+  if (status != SL_STATUS_IN_PROGRESS) {
+    printf("[MQTT] Connect failed: 0x%lX\r\n", status);
+    return;
+  }
+
+  // Wait for connection
+  while (!mqtt_connected && !mqtt_done) {
+    osThreadYield();
+  }
+  if (!mqtt_connected) {
+    printf("[MQTT] Could not connect to broker\r\n");
+    return;
+  }
+
+  // ── 5. Button poll loop — publish state changes ──────────────────────────
+  uint8_t prev_pin = 0xFF; // force first publish
+
+  while (!mqtt_done) {
+    uint8_t pin_value = 1;
+    sl_gpio_driver_get_pin(&sl_gpio_pin_config.port_pin, &pin_value);
+
+    // Button is active-low (pressed = 0)
+    uint8_t btn_pressed = (pin_value == 0) ? 1 : 0;
+
+    if (btn_pressed != prev_pin) { // only publish on state change
+      prev_pin = btn_pressed;
+
+      const char *payload = btn_pressed ? "ON" : "OFF";
+
+      sl_mqtt_client_message_t pub_msg = {
+        .qos_level            = MQTT_QOS,
+        .is_retained          = 0,
+        .is_duplicate_message = 0,
+        .topic                = (uint8_t *)BUTTON_STATE_TOPIC,
+        .topic_length         = strlen(BUTTON_STATE_TOPIC),
+        .content              = (uint8_t *)payload,
+        .content_length       = strlen(payload),
+      };
+
+      status = sl_mqtt_client_publish(&mqtt_client, &pub_msg, 0, NULL);
+      if (status != SL_STATUS_IN_PROGRESS) {
+        printf("[MQTT] Publish failed: 0x%lX\r\n", status);
+      } else {
+        printf("[MQTT] Published button state: %s\r\n", payload);
+      }
+    }
+
+    osDelay(BUTTON_POLL_MS);
+  }
+
+  printf("[MQTT] Thread exiting\r\n");
+}

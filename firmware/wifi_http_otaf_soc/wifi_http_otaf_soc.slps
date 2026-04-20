@@ -10,7 +10,7 @@
     <properties key="projectCommon.boardIds" value="com.silabs.board.none:0.0.0"/>
     <properties key="projectCommon.kitId" value=""/>
     <properties key="projectCommon.toolchainId" value="com.silabs.ss.framework.project.core.noToolChain:0.0.0"/>
-    <properties key="universalConfig.projectTypeIds" value="visual-studio-code"/>
+    <properties key="universalConfig.projectTypeIds" value="visual-studio-code com.silabs.ss.framework.project.core.projectType.none"/>
     <properties key="projectCommon.importModeId" value="COPY"/>
     <properties key="universalConfig.compSelProjInstanceId" value="1775051404767"/>
   </descriptors>

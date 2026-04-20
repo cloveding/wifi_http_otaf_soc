@@ -13,7 +13,7 @@ DocumentNamespace: https://silabs.com
 
 ## Creation Information
 Creator: Organization: Silicon Laboratories, Inc.
-Created: 2026-04-03T01:01:36Z
+Created: 2026-04-12T17:50:12Z
 ## Relationships
 Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-wiseconnect3_sdk-3.5.2
 Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-simplicity_sdk-2025.6.3
@@ -28,9 +28,12 @@ PackageSupplier: Organization: NOASSERTION
 ## Relationships
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-SIWG917Y111MGABA
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-basic_network_config_manager
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-mqtt
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-network_manager
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-si91x_memory_default_config
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_internal_stack
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_mem_pool_buffers_with_quota
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_soc_soft_reset
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-syscalls
@@ -64,6 +67,7 @@ Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-cmsis_udma
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-cmsis_common_driver
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-rsilib_udma
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-romdriver_udma
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-rsilib_dac
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-opn_config
@@ -103,10 +107,6 @@ Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-cmsis_usart_driver
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-romdriver_ulpss
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-rsilib_crc
-Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio
-Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral
-Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917
-Relationship: SPDXRef-wiseconnect3_sdk-3.5.2 CONTAINS SPDXRef-wiseconnect3_sdk-3.5.2-mqtt
 
 ## Package Information
 PackageName: SIWG917Y111MGABA
@@ -131,6 +131,17 @@ PackageLicenseConcluded: MSLA
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-basic_network_config_manager CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
 
 ## Package Information
+PackageName: MQTT Client
+SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-mqtt
+PackageVersion: 3.5.2
+PrimaryPackagePurpose: LIBRARY
+PackageDownloadLocation: NOASSERTION
+PackageSupplier: Organization: NOASSERTION
+PackageLicenseConcluded: MSLA
+## Relationships
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-mqtt CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
+
+## Package Information
 PackageName: Network Manager
 SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-network_manager
 PackageVersion: 3.5.2
@@ -153,6 +164,17 @@ PackageLicenseConcluded: Zlib
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-si91x_memory_default_config CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
 
 ## Package Information
+PackageName: GPIO
+SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio
+PackageVersion: 3.5.2
+PrimaryPackagePurpose: LIBRARY
+PackageDownloadLocation: NOASSERTION
+PackageSupplier: Organization: NOASSERTION
+PackageLicenseConcluded: Zlib
+## Relationships
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
+
+## Package Information
 PackageName: Internal Network Stack
 SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_internal_stack
 PackageVersion: 3.5.2
@@ -162,6 +184,17 @@ PackageSupplier: Organization: NOASSERTION
 PackageLicenseConcluded: Zlib
 ## Relationships
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_internal_stack CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
+
+## Package Information
+PackageName: LED
+SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917
+PackageVersion: 3.5.2
+PrimaryPackagePurpose: LIBRARY
+PackageDownloadLocation: NOASSERTION
+PackageSupplier: Organization: NOASSERTION
+PackageLicenseConcluded: MSLA
+## Relationships
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917 CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
 
 ## Package Information
 PackageName: Memory Pool buffers With Quota
@@ -525,6 +558,17 @@ PackageSupplier: Organization: NOASSERTION
 PackageLicenseConcluded: Zlib
 ## Relationships
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-rsilib_udma CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
+
+## Package Information
+PackageName: SL GPIO Peripheral
+SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral
+PackageVersion: 3.5.2
+PrimaryPackagePurpose: LIBRARY
+PackageDownloadLocation: NOASSERTION
+PackageSupplier: Organization: NOASSERTION
+PackageLicenseConcluded: Zlib
+## Relationships
+Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
 
 ## Package Information
 PackageName: ROM DRIVER UDMA
@@ -968,50 +1012,6 @@ PackageSupplier: Organization: NOASSERTION
 PackageLicenseConcluded: Zlib
 ## Relationships
 Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-rsilib_crc CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
-
-## Package Information
-PackageName: GPIO
-SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio
-PackageVersion: 3.5.2
-PrimaryPackagePurpose: LIBRARY
-PackageDownloadLocation: NOASSERTION
-PackageSupplier: Organization: NOASSERTION
-PackageLicenseConcluded: Zlib
-## Relationships
-Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
-
-## Package Information
-PackageName: SL GPIO Peripheral
-SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral
-PackageVersion: 3.5.2
-PrimaryPackagePurpose: LIBRARY
-PackageDownloadLocation: NOASSERTION
-PackageSupplier: Organization: NOASSERTION
-PackageLicenseConcluded: Zlib
-## Relationships
-Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
-
-## Package Information
-PackageName: LED
-SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917
-PackageVersion: 3.5.2
-PrimaryPackagePurpose: LIBRARY
-PackageDownloadLocation: NOASSERTION
-PackageSupplier: Organization: NOASSERTION
-PackageLicenseConcluded: MSLA
-## Relationships
-Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917 CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
-
-## Package Information
-PackageName: MQTT Client
-SPDXID: SPDXRef-wiseconnect3_sdk-3.5.2-mqtt
-PackageVersion: 3.5.2
-PrimaryPackagePurpose: LIBRARY
-PackageDownloadLocation: NOASSERTION
-PackageSupplier: Organization: NOASSERTION
-PackageLicenseConcluded: MSLA
-## Relationships
-Relationship: SPDXRef-wiseconnect3_sdk-3.5.2-mqtt CONTAINED_BY SPDXRef-wiseconnect3_sdk-3.5.2
 
 ## Package Information
 PackageName: Simplicity SDK Suite

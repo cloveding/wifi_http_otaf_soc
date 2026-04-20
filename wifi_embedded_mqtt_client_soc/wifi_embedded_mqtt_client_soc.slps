@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="wifi_embedded_mqtt_client_soc">
+    <properties key="projectCommon.sdkId" value="com.silabs.sdk.stack.sisdk:2025.6.3._-1658257643-2373502478"/>
+    <properties key="universalConfig.relativeWorkspacePath" value="../wifi_embedded_mqtt_client_soc.slcw"/>
+    <properties key="universalConfig.generationDirectory" value=""/>
+    <properties key="projectCommon.partId" value="mcu.arm.wfm.siwg917y111mgaba"/>
+    <properties key="universalConfig.toolchainCompatibility" value="iar gcc"/>
+    <properties key="projectCommon.overwriteCopiedSources" value="false"/>
+    <properties key="projectCommon.boardIds" value="com.silabs.board.none:0.0.0"/>
+    <properties key="projectCommon.kitId" value=""/>
+    <properties key="projectCommon.toolchainId" value="com.silabs.ss.framework.project.core.noToolChain:0.0.0"/>
+    <properties key="universalConfig.projectTypeIds" value="visual-studio-code"/>
+    <properties key="projectCommon.importModeId" value="COPY"/>
+    <properties key="universalConfig.compSelProjInstanceId" value="1775527388635"/>
+  </descriptors>
+</model:MDescriptors>

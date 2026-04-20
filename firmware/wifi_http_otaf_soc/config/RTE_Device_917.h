@@ -25,8 +25,6 @@
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
-#define USER_CONFIGURATION_ENABLE 1 // enable, delete warning
-
 #ifndef __RTE_DEVICE_H
 #define __RTE_DEVICE_H
 

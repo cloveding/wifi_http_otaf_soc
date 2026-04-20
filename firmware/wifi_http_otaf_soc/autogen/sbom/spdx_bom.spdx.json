@@ -5,7 +5,7 @@
   "name" : "Silicon-Laboratories",
   "documentNamespace" : "https://silabs.com",
   "creationInfo" : {
-    "created" : "2026-04-03T01:01:36Z",
+    "created" : "2026-04-12T17:50:12Z",
     "creators" : [ "Tool: Silicon Labs Configuration Tooling" ]
   },
   "comment" : "TERMS OF USE - SILICON LABORATORIES INC.\n(With respect to Silicon Labs software components, this Software Bill of Materials (SBOM) is based upon Silicon Labs'\nreview and analysis of the code version when released.  It is provided \"AS IS\" and does not modify, change or alter\nthe terms or conditions of your use of Silicon Labs' software and/or SDKs based upon license terms and/or agreements\nassociated with this software or SDKs when distributed to you, received by you, or installed by you.  Further, no\nwarranties or obligations are created by this SBOM.  It is your obligation to comply with the terms of licenses\nreferenced in this SBOM.)",
@@ -34,6 +34,14 @@
     "supplier" : "Organization: NOASSERTION",
     "licenseConcluded" : "MSLA"
   }, {
+    "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-mqtt",
+    "name" : "MQTT Client",
+    "versionInfo" : "3.5.2",
+    "primaryPackagePurpose" : "LIBRARY",
+    "downloadLocation" : "NOASSERTION",
+    "supplier" : "Organization: NOASSERTION",
+    "licenseConcluded" : "MSLA"
+  }, {
     "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-network_manager",
     "name" : "Network Manager",
     "versionInfo" : "3.5.2",
@@ -50,6 +58,14 @@
     "supplier" : "Organization: NOASSERTION",
     "licenseConcluded" : "Zlib"
   }, {
+    "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio",
+    "name" : "GPIO",
+    "versionInfo" : "3.5.2",
+    "primaryPackagePurpose" : "LIBRARY",
+    "downloadLocation" : "NOASSERTION",
+    "supplier" : "Organization: NOASSERTION",
+    "licenseConcluded" : "Zlib"
+  }, {
     "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_internal_stack",
     "name" : "Internal Network Stack",
     "versionInfo" : "3.5.2",
@@ -57,6 +73,14 @@
     "downloadLocation" : "NOASSERTION",
     "supplier" : "Organization: NOASSERTION",
     "licenseConcluded" : "Zlib"
+  }, {
+    "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917",
+    "name" : "LED",
+    "versionInfo" : "3.5.2",
+    "primaryPackagePurpose" : "LIBRARY",
+    "downloadLocation" : "NOASSERTION",
+    "supplier" : "Organization: NOASSERTION",
+    "licenseConcluded" : "MSLA"
   }, {
     "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_mem_pool_buffers_with_quota",
     "name" : "Memory Pool buffers With Quota",
@@ -316,6 +340,14 @@
   }, {
     "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-rsilib_udma",
     "name" : "UDMA",
+    "versionInfo" : "3.5.2",
+    "primaryPackagePurpose" : "LIBRARY",
+    "downloadLocation" : "NOASSERTION",
+    "supplier" : "Organization: NOASSERTION",
+    "licenseConcluded" : "Zlib"
+  }, {
+    "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral",
+    "name" : "SL GPIO Peripheral",
     "versionInfo" : "3.5.2",
     "primaryPackagePurpose" : "LIBRARY",
     "downloadLocation" : "NOASSERTION",
@@ -648,38 +680,6 @@
     "supplier" : "Organization: NOASSERTION",
     "licenseConcluded" : "Zlib"
   }, {
-    "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio",
-    "name" : "GPIO",
-    "versionInfo" : "3.5.2",
-    "primaryPackagePurpose" : "LIBRARY",
-    "downloadLocation" : "NOASSERTION",
-    "supplier" : "Organization: NOASSERTION",
-    "licenseConcluded" : "Zlib"
-  }, {
-    "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral",
-    "name" : "SL GPIO Peripheral",
-    "versionInfo" : "3.5.2",
-    "primaryPackagePurpose" : "LIBRARY",
-    "downloadLocation" : "NOASSERTION",
-    "supplier" : "Organization: NOASSERTION",
-    "licenseConcluded" : "Zlib"
-  }, {
-    "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917",
-    "name" : "LED",
-    "versionInfo" : "3.5.2",
-    "primaryPackagePurpose" : "LIBRARY",
-    "downloadLocation" : "NOASSERTION",
-    "supplier" : "Organization: NOASSERTION",
-    "licenseConcluded" : "MSLA"
-  }, {
-    "SPDXID" : "SPDXRef-wiseconnect3_sdk-3.5.2-mqtt",
-    "name" : "MQTT Client",
-    "versionInfo" : "3.5.2",
-    "primaryPackagePurpose" : "LIBRARY",
-    "downloadLocation" : "NOASSERTION",
-    "supplier" : "Organization: NOASSERTION",
-    "licenseConcluded" : "MSLA"
-  }, {
     "SPDXID" : "SPDXRef-simplicity_sdk-2025.6.3",
     "name" : "Simplicity SDK Suite",
     "versionInfo" : "2025.6.3",
@@ -1011,6 +1011,10 @@
     "relationshipType" : "CONTAINS"
   }, {
     "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
+    "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-mqtt",
+    "relationshipType" : "CONTAINS"
+  }, {
+    "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
     "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-network_manager",
     "relationshipType" : "CONTAINS"
   }, {
@@ -1019,7 +1023,15 @@
     "relationshipType" : "CONTAINS"
   }, {
     "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
+    "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio",
+    "relationshipType" : "CONTAINS"
+  }, {
+    "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
     "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_internal_stack",
+    "relationshipType" : "CONTAINS"
+  }, {
+    "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
+    "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917",
     "relationshipType" : "CONTAINS"
   }, {
     "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
@@ -1152,6 +1164,10 @@
   }, {
     "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
     "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-rsilib_udma",
+    "relationshipType" : "CONTAINS"
+  }, {
+    "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
+    "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral",
     "relationshipType" : "CONTAINS"
   }, {
     "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
@@ -1312,22 +1328,6 @@
   }, {
     "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
     "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-rsilib_crc",
-    "relationshipType" : "CONTAINS"
-  }, {
-    "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
-    "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio",
-    "relationshipType" : "CONTAINS"
-  }, {
-    "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
-    "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_gpio_peripheral",
-    "relationshipType" : "CONTAINS"
-  }, {
-    "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
-    "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-sl_si91x_led_917",
-    "relationshipType" : "CONTAINS"
-  }, {
-    "spdxElementId" : "SPDXRef-wiseconnect3_sdk-3.5.2",
-    "relatedSpdxElement" : "SPDXRef-wiseconnect3_sdk-3.5.2-mqtt",
     "relationshipType" : "CONTAINS"
   }, {
     "spdxElementId" : "SPDXRef-simplicity_sdk-2025.6.3",

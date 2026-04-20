@@ -1,0 +1,22 @@
+#CRC Codes for initially generated config files -- do not modify!
+dmadrv_config.h=281221886
+image_classifier_config.h=-595874059
+sl_core_config.h=-2018153270
+sl_device_init_dcdc_config.h=-1452144256
+sl_device_init_hfrco_config.h=723983452
+sl_driver_mvp_config.h=427678020
+sl_hfxo_manager_config.h=511487363
+sl_i2cspm_sensor_config.h=-683666961
+sl_memory_manager_config.h=-1147843522
+sl_memory_manager_region_config.h=990835082
+sl_ml_arducam_config.h=-72126597
+sl_ml_image_feature_generation_config.h=-2075438768
+sl_nn_mvp_config.h=383335462
+sl_power_manager_config.h=464971396
+sl_simple_led_led0_config.h=-2022052626
+sl_simple_led_led1_config.h=-267073654
+sl_sleeptimer_config.h=847044378
+sl_spidrv_exp_config.h=824137328
+sl_tflite_micro_config.h=1392610863
+spidrv_config.h=1282557349
+tflite/rock_paper_scissors.tflite=-43210501
